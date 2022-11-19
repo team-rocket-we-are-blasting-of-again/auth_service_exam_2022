@@ -1,0 +1,15 @@
+[package]
+name = "auth_service_exam_2022"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+rocket = { version = "0.5.0-rc.2", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0.147", features = ["derive"]}
+jwt-simple = "0.11.2"
+dotenv = "0.15.0"
+dotenv_codegen = "0.15.0"
