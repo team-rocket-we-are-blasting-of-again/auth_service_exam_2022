@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use deadpool_postgres::{Pool, Manager, ManagerConfig, RecyclingMethod};
 use tokio_postgres::NoTls;
 
@@ -23,5 +25,11 @@ impl UserManager {
         return UserManager {
             db_pool
         }
+    }
+
+    pub async fn get_from_id(&self, id: i64) -> Result<(), Box<dyn Error>>{
+        let client = self.db_pool.get().await?;
+        
+        Ok(())
     }
 }
