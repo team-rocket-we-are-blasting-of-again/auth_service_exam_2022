@@ -1,11 +1,7 @@
 use jwt_simple::prelude::*;
 use std::{fs, error::Error};
 
-#[derive(Deserialize, Serialize)]
-pub struct RoleClaims {
-    role_id: u64,
-    id: u64
-}
+use super::role_claims::RoleClaims;
 
 pub struct TokenManager {
     private_key: RS384KeyPair,
@@ -46,7 +42,7 @@ impl TokenManager {
     }
 }
 
-pub fn get_keys() -> Result<(RS384KeyPair, RS384PublicKey), Box<dyn Error>> {
+fn get_keys() -> Result<(RS384KeyPair, RS384PublicKey), Box<dyn Error>> {
     let private_key_content = fs::read_to_string("../keys/private.pem")?;
     let public_key_content = fs::read_to_string("../keys/public.pem")?;
 

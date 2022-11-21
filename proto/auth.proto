@@ -1,0 +1,16 @@
+syntax= "proto3";
+package auth;
+
+service Verify {
+    rpc VerifyUser (VerifyUserRequest) returns (VerifyUserResponse);
+}
+
+message VerifyUserRequest {
+    string jwt = 1;
+}
+
+message VerifyUserResponse {
+    bool verified = 1;
+    uint64 userId = 2;
+    string userRole = 3;
+}
