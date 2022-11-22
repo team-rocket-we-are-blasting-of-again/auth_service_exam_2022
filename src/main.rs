@@ -1,13 +1,15 @@
-use deadpool_postgres::{Manager, ManagerConfig, RecyclingMethod, Pool};
 use dotenv::dotenv;
-use tokio_postgres::NoTls;
 use user::user_manager::UserManager;
 
 use crate::jwt::token_manager::TokenManager;
 
-mod rest;
 mod jwt;
+mod rest;
 mod user;
+
+pub mod verify {
+    tonic::include_proto!("auth");
+}
 
 #[macro_use]
 extern crate rocket;
@@ -18,6 +20,7 @@ extern crate dotenv_codegen;
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
     dotenv().ok();
+
     let user_manager = UserManager::new().await;
     let _rocket = rocket::build()
         .manage(TokenManager::new())

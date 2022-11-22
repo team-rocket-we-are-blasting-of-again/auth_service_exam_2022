@@ -1,7 +1,7 @@
 use super::role::Role;
 
 pub struct User {
-    id: u64,
-    role: Role,
-    role_id: u8,
+    pub(crate) id: u32,
+    pub(crate) role: Role,
+    pub(crate) role_id: u32,
 }

@@ -1,5 +1,8 @@
+use postgres_types::{FromSql, ToSql};
+
+#[derive(Debug, ToSql, FromSql)]
 pub enum Role {
-    customer,
-    courier,
-    restaurant
+    Customer,
+    Courier,
+    Restaurant,
 }
