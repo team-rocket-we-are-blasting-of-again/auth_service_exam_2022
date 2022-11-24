@@ -11,6 +11,6 @@ message VerifyUserRequest {
 
 message VerifyUserResponse {
     bool verified = 1;
-    uint64 userId = 2;
+    uint32 userId = 2;
     string userRole = 3;
 }

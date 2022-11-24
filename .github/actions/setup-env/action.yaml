@@ -1,0 +1,27 @@
+name: Setup environment
+description: "Action used to setup the environment"
+
+runs:
+  using: composite
+  steps:
+    # Uncomment if you are using a docker compose to setup your environment
+    # - name: Setup environment
+    #   shell: bash
+    #   run: |
+    #     docker-compose up -d
+    #     sleep 5
+
+    - name: Setup rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+
+    - name: Use nightly
+      shell: bash
+      run: rustup default nightly
+
+    - name: gRPC dependencies
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install protobuf-compiler libprotobuf-dev -y

@@ -1,0 +1,88 @@
+name: PR Logs
+on: pull_request
+
+jobs:
+  logs:
+    name: PR Logs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup env
+        uses: ./.github/actions/setup-env
+
+      - name: Install requirements
+        shell: bash
+        run: |
+          cargo install cargo-binutils
+          rustup component add llvm-tools-preview
+
+      - name: Echo coverage report
+        id: coverage
+        shell: bash
+        run: |
+          report=$(rust-cov report \
+            $( \
+              for file in \
+                $( \
+                  RUSTFLAGS="-C instrument-coverage" \
+                    cargo test --tests --no-run --message-format=json \
+                      | jq -r "select(.profile.test == true) | .filenames[]" \
+                      | grep -v dSYM - \
+                ); \
+              do \
+                printf "%s %s " -object $file; \
+              done \
+            ) \
+          --instr-profile=json5format.profdata --summary-only)
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          echo "$report" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send reports to PR comment
+        uses: actions/github-script@v6
+        env:
+          COVERAGE: "coverage\n${{ steps.coverage.outputs.report }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // 1. Retrieve existing bot comments for the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Coverage Report')
+            })
+
+            // 2. Prepare format of the comment
+            const output = `
+            <details><summary>Coverage Report</summary>
+
+            \`\`\`\n
+            ${process.env.COVERAGE}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.WORKING_DIR }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            // 3. If we have a comment, update it, otherwise create a new one
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }

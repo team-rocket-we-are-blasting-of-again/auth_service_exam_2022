@@ -4,6 +4,7 @@ use user::user_manager::UserManager;
 use crate::jwt::token_manager::TokenManager;
 
 mod jwt;
+mod login_types;
 mod rest;
 mod user;
 
@@ -25,7 +26,14 @@ async fn main() -> Result<(), rocket::Error> {
     let _rocket = rocket::build()
         .manage(TokenManager::new())
         .manage(user_manager)
-        .mount("/", routes![rest::login])
+        .mount(
+            "/",
+            routes![
+                rest::login_customer,
+                rest::login_courier,
+                rest::login_restaurant
+            ],
+        )
         .launch()
         .await?;
 
