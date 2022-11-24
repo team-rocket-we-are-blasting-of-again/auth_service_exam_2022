@@ -17,12 +17,12 @@ async fn login(
 ) -> Result<LoginResponse, Debug<Box<dyn Error + Send + Sync>>> {
     let user = user_manager.get_from_role_and_email(email, &role).await?;
 
-    if !verify(password, &user.password).unwrap() {
+    if !verify(password, &user.user_password).unwrap() {
         panic!();
     }
 
     return Ok(LoginResponse {
-        token: token_manager.create_token(user.role, user.role_id).await,
+        token: token_manager.create_token(user.user_role, user.role_id).await,
     });
 }
 
@@ -35,7 +35,7 @@ pub async fn login_customer(
     let response = login(
         &request.email,
         &request.password,
-        Role::Customer,
+        Role::CUSTOMER,
         &token_manager,
         &user_manager,
     )
@@ -44,7 +44,7 @@ pub async fn login_customer(
     return Ok(Json(response));
 }
 
-#[post("/customer/login", data = "<request>")]
+#[post("/courier/login", data = "<request>")]
 pub async fn login_courier(
     request: Json<LoginRequest>,
     token_manager: &State<TokenManager>,
@@ -53,7 +53,7 @@ pub async fn login_courier(
     let response = login(
         &request.email,
         &request.password,
-        Role::Courier,
+        Role::COURIER,
         &token_manager,
         &user_manager,
     )
@@ -62,7 +62,7 @@ pub async fn login_courier(
     return Ok(Json(response));
 }
 
-#[post("/customer/login", data = "<request>")]
+#[post("/restaurant/login", data = "<request>")]
 pub async fn login_restaurant(
     request: Json<LoginRequest>,
     token_manager: &State<TokenManager>,
@@ -71,7 +71,7 @@ pub async fn login_restaurant(
     let response = login(
         &request.email,
         &request.password,
-        Role::Restaurant,
+        Role::RESTAURANT,
         &token_manager,
         &user_manager,
     )

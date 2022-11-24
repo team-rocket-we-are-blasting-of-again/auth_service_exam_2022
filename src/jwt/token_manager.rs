@@ -29,7 +29,7 @@ impl TokenManager {
         };
     }
 
-    pub async fn create_token(&self, role: Role, role_id: u32) -> String {
+    pub async fn create_token(&self, role: Role, role_id: i32) -> String {
         let custom_claims = RoleClaims { role, id: role_id };
         let claims =
             Claims::with_custom_claims(custom_claims, Duration::from_hours(self.token_duration));
@@ -49,8 +49,8 @@ impl TokenManager {
 }
 
 fn get_keys() -> Result<(RS384KeyPair, RS384PublicKey), Box<dyn Error>> {
-    let private_key_content = fs::read_to_string("../keys/private.pem")?;
-    let public_key_content = fs::read_to_string("../keys/public.pem")?;
+    let private_key_content = fs::read_to_string("keys/private.pem")?;
+    let public_key_content = fs::read_to_string("keys/public.pem")?;
 
     let private_key = RS384KeyPair::from_pem(&private_key_content)?;
     let public_key = RS384PublicKey::from_pem(&public_key_content)?;

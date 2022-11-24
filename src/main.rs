@@ -21,7 +21,6 @@ extern crate dotenv_codegen;
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
     dotenv().ok();
-
     let user_manager = UserManager::new().await;
     let _rocket = rocket::build()
         .manage(TokenManager::new())

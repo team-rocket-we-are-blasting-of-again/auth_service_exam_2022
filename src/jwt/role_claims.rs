@@ -5,5 +5,5 @@ use crate::user::role::Role;
 #[derive(Deserialize, Serialize)]
 pub struct RoleClaims {
     pub(crate) role: Role,
-    pub(crate) id: u32,
+    pub(crate) id: i32,
 }
