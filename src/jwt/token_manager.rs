@@ -29,8 +29,8 @@ impl TokenManager {
         };
     }
 
-    pub async fn create_token(&self, role: Role, role_id: i32) -> String {
-        let custom_claims = RoleClaims { role, id: role_id };
+    pub async fn create_token(&self, role: Role, role_id: i32, verified: bool) -> String {
+        let custom_claims = RoleClaims { role, id: role_id, verified};
         let claims =
             Claims::with_custom_claims(custom_claims, Duration::from_hours(self.token_duration));
         return self

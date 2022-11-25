@@ -7,8 +7,9 @@ mod jwt;
 mod login_types;
 mod rest;
 mod user;
+mod grpc;
 
-pub mod verify {
+pub mod grpc_auth {
     tonic::include_proto!("auth");
 }
 
