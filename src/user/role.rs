@@ -29,3 +29,16 @@ impl FromStr for Role {
         }
     }
 }
+
+impl TryFrom<i32> for Role {
+    type Error = ();
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Role::CUSTOMER),
+            1 => Ok(Role::COURIER),
+            2 => Ok(Role::RESTAURANT),
+            _ => Err(())
+        }
+    }
+}

@@ -22,7 +22,7 @@ async fn login(
     }
 
     return Ok(LoginResponse {
-        token: token_manager.create_token(user.user_role, user.role_id, user.verified).await,
+        token: token_manager.create_token(user.user_role, user.role_id).await,
     });
 }
 

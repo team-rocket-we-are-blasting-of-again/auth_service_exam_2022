@@ -14,7 +14,6 @@ message VerifyUserRequest {
 }
 
 message VerifyUserResponse {
-    bool verified = 1;
     int32 roleId = 2;
     string userRole = 3;
 }

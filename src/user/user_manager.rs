@@ -46,8 +46,21 @@ impl UserManager {
             user_role: Role::from_str(result.get::<&str, &str>("user_role")).unwrap(),
             role_id: result.get::<&str, i32>("role_id"),
             email: result.get::<&str, String>("email"),
-            user_password: result.get::<&str, String>("user_password"),
-            verified: result.get::<&str, bool>("verified"),
+            user_password: result.get::<&str, String>("user_password")
         })
+    }
+
+    pub async fn create_user(&self, user: User) -> Result<i32, Box<dyn Error + Send + Sync>>{
+        let mut client = self.db_pool.get().await?;
+        let transaction = client.transaction().await?;
+        let statement = transaction
+            .prepare_typed_cached("INSERT INTO users (user_role, role_id, email, user_password) VALUES ($1, $2, $3, $4) RETURNING id;",
+            &[Type::TEXT, Type::INT4, Type::TEXT, Type::TEXT])
+            .await?;
+        let role = user.user_role.to_string();
+        let result = transaction.query_one(&statement, &[&role, &user.role_id, &user.email, &user.user_password]).await?;
+        let id = result.get::<&str, i32>("id");
+        transaction.commit().await?;
+        Ok(id)
     }
 }

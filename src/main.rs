@@ -1,4 +1,10 @@
+use std::error::Error;
+
 use dotenv::dotenv;
+use grpc::{UserService, VerifyService};
+use grpc_auth::{verify_server::VerifyServer, user_server::UserServer};
+use tokio::task;
+use tonic::transport::Server;
 use user::user_manager::UserManager;
 
 use crate::jwt::token_manager::TokenManager;
@@ -20,7 +26,8 @@ extern crate rocket;
 extern crate dotenv_codegen;
 
 #[rocket::main]
-async fn main() -> Result<(), rocket::Error> {
+async fn main() -> Result<(), Box<dyn Error>> {
+    task::spawn(start_grpc_server());
     dotenv().ok();
     let user_manager = UserManager::new().await;
     let _rocket = rocket::build()
@@ -37,5 +44,17 @@ async fn main() -> Result<(), rocket::Error> {
         .launch()
         .await?;
 
+    Ok(())
+}
+
+async fn start_grpc_server() -> Result<(), Box<dyn Error + Send + Sync>> {
+    let addr = "[::1]:50051".parse()?;
+    let user_service = UserService::new().await?;
+    let verify_service = VerifyService::new();
+    Server::builder()
+        .add_service(VerifyServer::new(verify_service))
+        .add_service(UserServer::new(user_service))
+        .serve(addr)
+        .await?;
     Ok(())
 }
