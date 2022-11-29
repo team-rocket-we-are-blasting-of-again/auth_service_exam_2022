@@ -5,6 +5,5 @@ pub struct User {
     pub(crate) user_role: Role,
     pub(crate) role_id: i32,
     pub(crate) email: String,
-    pub(crate) user_password: String,
-    pub(crate) verified: bool,
+    pub(crate) user_password: String
 }

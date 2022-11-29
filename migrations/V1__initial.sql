@@ -4,6 +4,5 @@ CREATE TABLE users (
     role_id int4 NOT NULL,
     email text NOT NULL,
     user_password text NOT NULL,
-    verified boolean NOT NULL DEFAULT false,
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );

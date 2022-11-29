@@ -6,5 +6,4 @@ use crate::user::role::Role;
 pub struct RoleClaims {
     pub(crate) role: Role,
     pub(crate) id: i32,
-    pub(crate) verified: bool
 }
