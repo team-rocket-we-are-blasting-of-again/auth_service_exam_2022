@@ -1,0 +1,13 @@
+[
+    {
+      "requestPath": "/restaurant/noauth/**",
+      "forwardUri": "http://restaurant:8080",
+      "routePathDto": [
+        {
+          "path": "/restaurant/noauth/**",
+          "method": "NONE",
+          "rolesAllowed": []
+        }
+      ]
+    }
+  ]
