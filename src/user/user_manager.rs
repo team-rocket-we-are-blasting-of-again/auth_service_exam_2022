@@ -1,6 +1,7 @@
 use std::{error::Error, str::FromStr};
 
 use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod};
+use dotenvy::var;
 use tokio_postgres::{types::Type, NoTls};
 
 use super::{role::Role, user::User};
@@ -12,11 +13,11 @@ pub struct UserManager {
 impl UserManager {
     pub async fn new() -> UserManager {
         let mut db_config = tokio_postgres::Config::new();
-        db_config.host(dotenv!("POSTGRES_HOST"));
-        db_config.user(dotenv!("POSTGRES_USER"));
-        db_config.password(dotenv!("POSTGRES_PASSWORD"));
-        db_config.dbname(dotenv!("POSTGRES_DATABASE"));
-        db_config.port(dotenv!("POSTGRES_PORT").trim().parse().unwrap());
+        db_config.host(&var("POSTGRES_HOST").unwrap());
+        db_config.user(&var("POSTGRES_USER").unwrap());
+        db_config.password(&var("POSTGRES_PASSWORD").unwrap());
+        db_config.dbname(&var("POSTGRES_DATABASE").unwrap());
+        db_config.port(var("POSTGRES_HOST").unwrap().trim().parse().unwrap());
         let db_manager_config = ManagerConfig {
             recycling_method: RecyclingMethod::Fast,
         };

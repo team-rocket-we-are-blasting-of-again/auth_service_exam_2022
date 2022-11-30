@@ -1,3 +1,4 @@
+use dotenvy::var;
 use jwt_simple::prelude::*;
 use std::{error::Error, fs};
 
@@ -17,7 +18,8 @@ impl TokenManager {
             Ok((private, public)) => (private, public),
             Err(e) => panic!("{}", e),
         };
-        let token_duration: u64 = dotenv!("TOKEN_DURATION_HOURS")
+        let token_duration: u64 = var("TOKEN_DURATION_HOURS")
+            .unwrap()
             .trim()
             .parse()
             .expect("number required");

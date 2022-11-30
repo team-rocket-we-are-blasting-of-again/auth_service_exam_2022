@@ -22,13 +22,10 @@ pub mod grpc_auth {
 #[macro_use]
 extern crate rocket;
 
-#[macro_use]
-extern crate dotenvy_macro;
-
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    task::spawn(start_grpc_server());
     dotenv().ok();
+    task::spawn(start_grpc_server());
     let user_manager = UserManager::new().await;
     let _rocket = rocket::build()
         .manage(TokenManager::new())
