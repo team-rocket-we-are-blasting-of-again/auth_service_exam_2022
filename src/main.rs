@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use grpc::{UserService, VerifyService};
 use grpc_auth::{verify_server::VerifyServer, user_server::UserServer};
 use tokio::task;
@@ -23,7 +23,7 @@ pub mod grpc_auth {
 extern crate rocket;
 
 #[macro_use]
-extern crate dotenv_codegen;
+extern crate dotenvy_macro;
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn Error>> {
