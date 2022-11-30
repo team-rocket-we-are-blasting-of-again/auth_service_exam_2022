@@ -57,3 +57,28 @@ fn get_keys() -> Result<(RS384KeyPair, RS384PublicKey), Box<dyn Error>> {
 
     return Ok((private_key, public_key));
 }
+
+#[cfg(test)]
+mod tests {
+    use regex::Regex;
+
+    use super::*;
+
+    #[test]
+    fn test_get_keys() {
+        let success = match get_keys() {
+            Ok(_) => true,
+            Err(_) => false
+        };
+
+        assert_eq!(success, true);
+    }
+
+    #[tokio::test]
+    async fn test_create_token() {
+        let regex = Regex::new(r"^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$").unwrap();
+        let manager = TokenManager::new();
+        let token = manager.create_token(Role::CUSTOMER, 1).await;
+        assert!(regex.is_match(&token[..]))
+    }
+}

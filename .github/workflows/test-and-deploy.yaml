@@ -17,6 +17,9 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
 
+      - name: Run test prerequisites
+        run: ./genkeys.sh
+
       - name: Run unit tests
         run: cargo test
 
