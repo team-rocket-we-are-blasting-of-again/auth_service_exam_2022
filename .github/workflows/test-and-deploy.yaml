@@ -23,12 +23,12 @@ jobs:
       - name: Run unit tests
         run: cargo test
         env:
-          TOKEN_DURATION_HOURS=2
-          POSTGRES_USER=postgres
-          POSTGRES_PASSWORD=postgres
-          POSTGRES_HOST=localhost
-          POSTGRES_DATABASE=auth
-          POSTGRES_PORT=5431
+          TOKEN_DURATION_HOURS: 2
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST: localhost
+          POSTGRES_DATABASE: auth
+          POSTGRES_PORT: 5431
 
       - name: Setup variables
         run: |
