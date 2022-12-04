@@ -17,7 +17,7 @@ impl UserManager {
         db_config.user(&var("POSTGRES_USER").unwrap());
         db_config.password(&var("POSTGRES_PASSWORD").unwrap());
         db_config.dbname(&var("POSTGRES_DATABASE").unwrap());
-        db_config.port(var("POSTGRES_HOST").unwrap().trim().parse().unwrap());
+        db_config.port(var("POSTGRES_PORT").unwrap().trim().parse().unwrap());
         let db_manager_config = ManagerConfig {
             recycling_method: RecyclingMethod::Fast,
         };

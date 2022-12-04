@@ -51,8 +51,8 @@ impl TokenManager {
 }
 
 fn get_keys() -> Result<(RS384KeyPair, RS384PublicKey), Box<dyn Error>> {
-    let private_key_content = fs::read_to_string("keys/private.pem")?;
-    let public_key_content = fs::read_to_string("keys/public.pem")?;
+    let private_key_content = fs::read_to_string(var("KEY_DIR").unwrap() + "/private.pem")?;
+    let public_key_content = fs::read_to_string(var("KEY_DIR").unwrap() + "/public.pem")?;
 
     let private_key = RS384KeyPair::from_pem(&private_key_content)?;
     let public_key = RS384PublicKey::from_pem(&public_key_content)?;
