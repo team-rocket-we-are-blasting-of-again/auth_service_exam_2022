@@ -29,6 +29,7 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_DATABASE: auth
           POSTGRES_PORT: 5431
+          KEY_DIR: ./keys
 
       - name: Setup variables
         run: |
