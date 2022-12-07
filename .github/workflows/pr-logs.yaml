@@ -18,12 +18,13 @@ jobs:
         run: |
           cargo install cargo-binutils
           cargo install --locked cargo-mutants
+          ./genkeys.sh
           rustup component add llvm-tools-preview
       
       - name: Build mutation testing report
         env: 
-          KEY_DIR: "./keys"
-          TOKEN_DURATION_HOURS: "2"
+          KEY_DIR: ./keys
+          TOKEN_DURATION_HOURS: 2
         run: cargo mutants
 
       - name: Echo coverage report
