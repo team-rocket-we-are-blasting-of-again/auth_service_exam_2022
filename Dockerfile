@@ -9,11 +9,15 @@ RUN apt install \
     -y
 RUN cargo install --path .
 RUN sh genkeys.sh
+RUN cargo install refinery_cli
 
 FROM tobiaszimmer/exam-gateway-subscription:rust-grpc
 RUN apt-get update && apt install libssl1.1
 COPY --from=builder /usr/local/cargo/bin/auth_service_exam_2022 /usr/local/bin/application
+COPY start.sh /start.sh
 COPY --from=builder /build/keys /keys
+COPY --from=builder /usr/local/cargo/bin/refinery /usr/local/bin/refinery
 COPY gateway-routes.json /gateway-routes.json
 ENV ROCKET_ADDRESS=0.0.0.0
 ENV KEY_DIR=/keys
+CMD ["sh","/start.sh"]

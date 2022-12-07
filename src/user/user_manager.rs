@@ -13,11 +13,11 @@ pub struct UserManager {
 impl UserManager {
     pub async fn new() -> UserManager {
         let mut db_config = tokio_postgres::Config::new();
-        db_config.host(&var("POSTGRES_HOST").unwrap());
-        db_config.user(&var("POSTGRES_USER").unwrap());
-        db_config.password(&var("POSTGRES_PASSWORD").unwrap());
-        db_config.dbname(&var("POSTGRES_DATABASE").unwrap());
-        db_config.port(var("POSTGRES_PORT").unwrap().trim().parse().unwrap());
+        db_config.host(&var("POSTGRES_HOST").expect("Environment var should not be null!"));
+        db_config.user(&var("POSTGRES_USER").expect("Environment var should not be null!"));
+        db_config.password(&var("POSTGRES_PASSWORD").expect("Environment var should not be null!"));
+        db_config.dbname(&var("POSTGRES_DATABASE").expect("Environment var should not be null!"));
+        db_config.port(var("POSTGRES_PORT").expect("Environment var should not be null!").trim().parse().unwrap());
         let db_manager_config = ManagerConfig {
             recycling_method: RecyclingMethod::Fast,
         };

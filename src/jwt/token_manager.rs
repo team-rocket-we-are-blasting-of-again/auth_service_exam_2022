@@ -19,7 +19,7 @@ impl TokenManager {
             Err(e) => panic!("{}", e),
         };
         let token_duration: u64 = var("TOKEN_DURATION_HOURS")
-            .unwrap()
+            .expect("Environment var should not be null!")
             .trim()
             .parse()
             .expect("number required");
@@ -51,8 +51,8 @@ impl TokenManager {
 }
 
 fn get_keys() -> Result<(RS384KeyPair, RS384PublicKey), Box<dyn Error>> {
-    let private_key_content = fs::read_to_string(var("KEY_DIR").unwrap() + "/private.pem")?;
-    let public_key_content = fs::read_to_string(var("KEY_DIR").unwrap() + "/public.pem")?;
+    let private_key_content = fs::read_to_string(var("KEY_DIR").expect("Environment var should not be null!") + "/private.pem")?;
+    let public_key_content = fs::read_to_string(var("KEY_DIR").expect("Environment var should not be null!") + "/public.pem")?;
 
     let private_key = RS384KeyPair::from_pem(&private_key_content)?;
     let public_key = RS384PublicKey::from_pem(&public_key_content)?;
