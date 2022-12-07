@@ -25,7 +25,7 @@ jobs:
         env: 
           KEY_DIR: ./keys
           TOKEN_DURATION_HOURS: 2
-        run: cargo mutants; echo 0
+        run: ./mutations.sh
 
       - name: Echo coverage report
         id: coverage
