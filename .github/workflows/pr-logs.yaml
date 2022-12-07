@@ -17,7 +17,11 @@ jobs:
         shell: bash
         run: |
           cargo install cargo-binutils
+          cargo install --locked cargo-mutants
           rustup component add llvm-tools-preview
+      
+      - name: Build mutation testing report
+      - run: cargo mutants
 
       - name: Echo coverage report
         id: coverage
@@ -41,10 +45,19 @@ jobs:
           echo "$report" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
+      - name: Echo Mutation testing report
+      - id: mutation
+      - run: |
+          report=$(cat mutants.out/missed.txt)
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          echo "$report" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Send reports to PR comment
         uses: actions/github-script@v6
         env:
           COVERAGE: "coverage\n${{ steps.coverage.outputs.report }}"
+          MUTATION: "mutation\n${{ steps.mutation.outputs.report }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -64,6 +77,13 @@ jobs:
 
             \`\`\`\n
             ${process.env.COVERAGE}
+            \`\`\`
+
+            </details>
+            <details><summary>Mutation testing Report</summary>
+
+            \`\`\`\n
+            ${process.env.MUTATION}
             \`\`\`
 
             </details>
