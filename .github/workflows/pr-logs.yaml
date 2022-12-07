@@ -21,6 +21,9 @@ jobs:
           rustup component add llvm-tools-preview
       
       - name: Build mutation testing report
+        env: 
+          KEY_DIR: "./keys"
+          TOKEN_DURATION_HOURS: "2"
         run: cargo mutants
 
       - name: Echo coverage report
