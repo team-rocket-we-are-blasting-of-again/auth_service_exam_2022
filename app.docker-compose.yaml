@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  app:
+    depends_on:
+      - authdb
+    container_name: auth
+    image: tobiaszimmer/auth
+    ports:
+      - "8000:8000"
+    environment:
+      POSTGRES_HOST: authdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: auth
+      TOKEN_DURATION_HOURS: 12
+      HAS_GATEWAY: false
+
+  authdb:
+    image: postgres:15.1-alpine
+    ports:
+      - "5431:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=auth
