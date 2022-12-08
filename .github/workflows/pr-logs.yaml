@@ -1,6 +1,15 @@
 name: PR Logs
 on: pull_request
 
+env:
+  TOKEN_DURATION_HOURS: 2
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST: localhost
+  POSTGRES_DATABASE: auth
+  POSTGRES_PORT: 5431
+  KEY_DIR: ./keys
+
 jobs:
   logs:
     name: PR Logs
@@ -20,9 +29,9 @@ jobs:
           cargo install --locked cargo-mutants
           ./genkeys.sh
           rustup component add llvm-tools-preview
-      
+
       - name: Build mutation testing report
-        env: 
+        env:
           KEY_DIR: ./keys
           TOKEN_DURATION_HOURS: 2
         run: ./mutations.sh
@@ -31,6 +40,7 @@ jobs:
         id: coverage
         shell: bash
         run: |
+          RUSTFLAGS="-C instrument-coverage" cargo test --tests
           report=$(rust-cov report \
             $( \
               for file in \
