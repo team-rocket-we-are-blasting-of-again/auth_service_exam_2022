@@ -1,11 +1,19 @@
 name: PR Logs
 on: pull_request
 
+env:
+  TOKEN_DURATION_HOURS: 2
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST: localhost
+  POSTGRES_DATABASE: auth
+  POSTGRES_PORT: 5431
+  KEY_DIR: ./keys
+
 jobs:
   logs:
     name: PR Logs
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -16,27 +24,35 @@ jobs:
       - name: Install requirements
         shell: bash
         run: |
-          cargo install cargo-binutils
-          rustup component add llvm-tools-preview
+          cargo install cargo-tarpaulin
+          cargo install --locked cargo-mutants
+          ./genkeys.sh
 
-      - name: Echo coverage report
-        id: coverage
-        shell: bash
+      - name: Build mutation testing report
+        env:
+          KEY_DIR: ./keys
+          TOKEN_DURATION_HOURS: 2
+        run: ./mutations.sh
+
+      - name: Generate code coverage
+        env:
+          KEY_DIR: ./keys
+          TOKEN_DURATION_HOURS: 2
         run: |
-          report=$(rust-cov report \
-            $( \
-              for file in \
-                $( \
-                  RUSTFLAGS="-C instrument-coverage" \
-                    cargo test --tests --no-run --message-format=json \
-                      | jq -r "select(.profile.test == true) | .filenames[]" \
-                      | grep -v dSYM - \
-                ); \
-              do \
-                printf "%s %s " -object $file; \
-              done \
-            ) \
-          --instr-profile=json5format.profdata --summary-only)
+          cargo tarpaulin --out xml
+
+      - name: Code Coverage Report
+        uses: 5monkeys/cobertura-action@master
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          path: cobertura.xml
+          minimum_coverage: 0
+
+
+      - name: Echo Mutation testing report
+        id: mutation
+        run: |
+          report=$(cat mutants.out/missed.txt)
           echo "report<<EOF" >> $GITHUB_OUTPUT
           echo "$report" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -44,7 +60,7 @@ jobs:
       - name: Send reports to PR comment
         uses: actions/github-script@v6
         env:
-          COVERAGE: "coverage\n${{ steps.coverage.outputs.report }}"
+          MUTATION: "mutation\n${{ steps.mutation.outputs.report }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -60,10 +76,10 @@ jobs:
 
             // 2. Prepare format of the comment
             const output = `
-            <details><summary>Coverage Report</summary>
+            <details><summary>Mutation testing Report</summary>
 
             \`\`\`\n
-            ${process.env.COVERAGE}
+            ${process.env.MUTATION}
             \`\`\`
 
             </details>

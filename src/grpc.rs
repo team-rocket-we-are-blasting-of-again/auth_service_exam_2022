@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use bcrypt::{bcrypt, DEFAULT_COST, hash};
+use bcrypt::{DEFAULT_COST, hash};
 use tonic::{Request, Response, Status};
 
 use crate::{

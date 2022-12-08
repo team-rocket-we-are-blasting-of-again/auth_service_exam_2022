@@ -17,8 +17,19 @@ jobs:
       - name: Setup env
         uses: ./.github/actions/setup-env
 
+      - name: Run test prerequisites
+        run: ./genkeys.sh
+
       - name: Run unit tests
         run: cargo test
+        env:
+          TOKEN_DURATION_HOURS: 2
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST: localhost
+          POSTGRES_DATABASE: auth
+          POSTGRES_PORT: 5431
+          KEY_DIR: ./keys
 
       - name: Setup variables
         run: |
