@@ -55,7 +55,7 @@ jobs:
                 printf "%s %s " -object $file; \
               done \
             ) \
-          --instr-profile=formatjson5.profdata --summary-only)
+          --instr-profile=json5format.profdata --summary-only)
           echo "report<<EOF" >> $GITHUB_OUTPUT
           echo "$report" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
