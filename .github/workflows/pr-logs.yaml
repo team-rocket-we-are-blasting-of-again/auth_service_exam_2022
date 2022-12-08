@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: |
           RUSTFLAGS="-C instrument-coverage" cargo test --tests
-          $ llvm-profdata merge -sparse default_*.profraw -o json5format.profdata
+          llvm-profdata merge -sparse default_*.profraw -o json5format.profdata
           report=$(rust-cov report \
             $( \
               for file in \
@@ -55,7 +55,7 @@ jobs:
                 printf "%s %s " -object $file; \
               done \
             ) \
-          --instr-profile=json5format.profdata --summary-only)
+          --instr-profile=formatjson5.profdata --summary-only)
           echo "report<<EOF" >> $GITHUB_OUTPUT
           echo "$report" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
