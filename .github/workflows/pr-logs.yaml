@@ -14,9 +14,6 @@ jobs:
   logs:
     name: PR Logs
     runs-on: ubuntu-latest
-    container:
-      image: xd009642/tarpaulin:develop-nightly
-      options: --security-opt seccomp=unconfined
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -39,15 +36,17 @@ jobs:
         run: ./mutations.sh
 
       - name: Generate code coverage
+        env:
+          KEY_DIR: ./keys
+          TOKEN_DURATION_HOURS: 2
         run: |
-          cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --out lcov
+          cargo +nightly tarpaulin --out lcov
 
       - name: Code Coverage Report
         uses: romeovs/lcov-reporter-action@v0.2.11
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: ./lcov.info
-          title: 'Code coverage report'
 
 
       - name: Echo Mutation testing report

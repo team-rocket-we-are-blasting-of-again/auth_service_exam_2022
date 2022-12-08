@@ -23,5 +23,5 @@ runs:
     - name: gRPC dependencies
       shell: bash
       run: |
-        apt update
-        apt install protobuf-compiler libprotobuf-dev -y
+        sudo apt update
+        sudo apt install protobuf-compiler libprotobuf-dev -y
