@@ -39,13 +39,12 @@ jobs:
           KEY_DIR: ./keys
           TOKEN_DURATION_HOURS: 2
         run: |
-          cargo tarpaulin --out lcov
+          cargo tarpaulin --out xml
 
       - name: Code Coverage Report
-        uses: romeovs/lcov-reporter-action@v0.2.11
+        uses: 5monkeys/cobertura-action@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          lcov-file: ./lcov.info
+          path: cobertura.xml
 
 
       - name: Echo Mutation testing report
