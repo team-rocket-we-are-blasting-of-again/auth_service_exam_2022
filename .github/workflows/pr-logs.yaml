@@ -46,6 +46,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           path: cobertura.xml
+          minimum_coverage: 0
 
 
       - name: Echo Mutation testing report
