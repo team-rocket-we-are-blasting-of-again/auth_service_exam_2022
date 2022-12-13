@@ -1,19 +1,19 @@
 use std::error::Error;
 
-use dotenvy::dotenv;
+use dotenvy::{dotenv, var};
 use grpc::{UserService, VerifyService};
-use grpc_auth::{verify_server::VerifyServer, user_server::UserServer};
+use grpc_auth::{user_server::UserServer, verify_server::VerifyServer};
 use tokio::task;
 use tonic::transport::Server;
 use user::user_manager::UserManager;
 
 use crate::jwt::token_manager::TokenManager;
 
+mod grpc;
 mod jwt;
 mod login_types;
 mod rest;
 mod user;
-mod grpc;
 
 pub mod grpc_auth {
     tonic::include_proto!("auth");
@@ -45,7 +45,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 async fn start_grpc_server() -> Result<(), Box<dyn Error + Send + Sync>> {
-    let addr = "[::1]:50051".parse()?;
+    let addr = var("GRPC_ADDRESS")
+        .expect("Environment var should not be null!")
+        .parse()?;
     let user_service = UserService::new().await?;
     let verify_service = VerifyService::new();
     Server::builder()
@@ -55,4 +57,3 @@ async fn start_grpc_server() -> Result<(), Box<dyn Error + Send + Sync>> {
         .await?;
     Ok(())
 }
- 
