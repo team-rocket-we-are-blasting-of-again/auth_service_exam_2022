@@ -1,5 +1,5 @@
 syntax= "proto3";
-package auth;
+package com.teamrocket.proto;
 
 service Verify {
     rpc VerifyUser (VerifyUserRequest) returns (VerifyUserResponse);

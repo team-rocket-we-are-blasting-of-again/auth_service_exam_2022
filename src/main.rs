@@ -16,7 +16,7 @@ mod rest;
 mod user;
 
 pub mod grpc_auth {
-    tonic::include_proto!("auth");
+    tonic::include_proto!("com.teamrocket.proto");
 }
 
 #[macro_use]
