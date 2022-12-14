@@ -23,7 +23,6 @@ pub mod grpc_auth {
 extern crate rocket;
 
 #[rocket::main]
-#[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     dotenv().ok();
     task::spawn(start_grpc_server());
